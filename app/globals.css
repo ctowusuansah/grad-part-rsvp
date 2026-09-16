@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #5c4433;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px);
+  background-size: 14px 14px;
+  color: #231a14;
+}
+
+.pin {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e14b43, #7a1e19);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 70px;
+  height: 22px;
+  background: rgba(230, 220, 200, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.case-card {
+  background: #f3ead9;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
