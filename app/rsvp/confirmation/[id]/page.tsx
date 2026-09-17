@@ -64,6 +64,14 @@ export default async function ConfirmationPage({ params }: { params: { id: strin
           A confirmation email has also been sent to you, and you'll get another once your payment is
           verified.
         </p>
+
+        <div className="mt-4 rounded-sm border border-ink/10 bg-cream/50 p-3 text-left text-xs text-ink/70">
+          <p className="font-semibold text-ink">📧 Didn't receive your confirmation email?</p>
+          <p className="mt-1">
+            Please check your Spam/Junk folder. If you find it there, mark it as
+            <span className="font-semibold"> "Not Spam"</span> so future event updates can reach your inbox.
+          </p>
+        </div>
       </div>
     </main>
   );
