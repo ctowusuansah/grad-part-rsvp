@@ -1,21 +1,24 @@
 "use client";
 
-import { CONTRIBUTION_AMOUNT_GHS, EVENT_DATE_DISPLAY, EVENT_TIME_DISPLAY, EVENT_VENUE } from "@/lib/types";
+import {
+  CONTRIBUTION_AMOUNT_GHS,
+  EVENT_DATE_DISPLAY,
+  EVENT_TIME_DISPLAY,
+  EVENT_VENUE,
+} from "@/lib/types";
 
 export default function WhatsAppShare() {
   function handleShare() {
-    const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      (typeof window !== "undefined" ? window.location.origin : "");
+    const siteUrl = "https://grad-party-rho.vercel.app/";
 
     const message = [
-      "Class of 2026 Grad Party RSVP is now open.",
+      "🎉 Class of 2026 Grad Party RSVP is now open!",
       "",
-      EVENT_DATE_DISPLAY,
-      EVENT_TIME_DISPLAY,
-      EVENT_VENUE,
+      `📅 ${EVENT_DATE_DISPLAY}`,
+      `📍 ${EVENT_VENUE}`,
+      `⏰ ${EVENT_TIME_DISPLAY}`,
       "",
-      `Contribution: GHS ${CONTRIBUTION_AMOUNT_GHS}`,
+      `💰 Contribution: GHS ${CONTRIBUTION_AMOUNT_GHS}`,
       "",
       "RSVP here:",
       siteUrl,
