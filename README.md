@@ -151,7 +151,7 @@ Replace that file if the programme changes.
 * Manual payment confirmation/rejection.
 * CSV export.
 * Summary cards showing total RSVPs, confirmed/pending/rejected payments, and expected/received/outstanding amounts.
-* U Unique per-attendee QR codes shown on confirmation pages.
+* Unique per-attendee QR codes shown on confirmation pages.
 * Poster-ready QR code for the public RSVP link.
 * Check-in screen with camera QR scanning where supported.
 * Manual attendee search as a fallback for QR scanning.
