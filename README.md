@@ -1,153 +1,169 @@
 # Class of 2026 Grad Party — RSVP & Payment System
 
-A mobile-first RSVP + MoMo payment-tracking site for the KNUST Class of 2026
-Grad Party, with a private admin dashboard, manual payment verification,
-QR check-in, and email confirmations.
+A mobile-first RSVP + MoMo payment-tracking site for the KNUST Class of 2026 Grad Party, with a private admin dashboard, manual payment verification, QR check-in, and payment-status tracking.
 
 This is a real Next.js application with a real database (Supabase/Postgres).
-It needs to be deployed to actually go live — nobody at Anthropic can host it
-for you permanently, but the steps below take about 15–20 minutes and are
-all free at this scale.
 
 ---
 
 ## 1. Create your Supabase project (the database)
 
-1. Go to https://supabase.com → **New project** (free tier is plenty for this).
-2. Once it's created, open **SQL Editor → New query**, paste in the contents
-   of `supabase/schema.sql` from this folder, and click **Run**. This creates
-   the `rsvps` table and a private storage bucket for payment screenshots.
-3. Go to **Project Settings → API**. You'll need two values for step 3 below:
-   - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
-   - **service_role key** (under "Project API keys", NOT the `anon` key)
-     → `SUPABASE_SERVICE_ROLE_KEY`
+1. Go to https://supabase.com → **New project**.
+2. Once it's created, open **SQL Editor → New query**, paste in the contents of `supabase/schema.sql` from this folder, and click **Run**. This creates the `rsvps` table and a private storage bucket for payment screenshots.
+3. Go to **Project Settings → API**. You'll need two values:
 
-The service role key is powerful — never share it, and never put it in any
-file that starts with `NEXT_PUBLIC_`.
+   * **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
+   * **service_role key** under **Project API keys** → `SUPABASE_SERVICE_ROLE_KEY`
 
-## 2. Create your Resend account (email)
+The service role key is powerful — never share it, and never put it in a file that starts with `NEXT_PUBLIC_`.
 
-1. Go to https://resend.com → sign up (free tier: 100 emails/day, 3,000/month).
-2. Grab an **API key** from the dashboard → `RESEND_API_KEY`.
-3. By default you can only send *from* `onboarding@resend.dev` and *to* your
-   own verified email until you verify a domain. That's fine for testing.
-   For sending to all your classmates, either:
-   - Verify a domain you own (Resend → Domains → Add Domain), then set
-     `EMAIL_FROM` to something like `RSVP <rsvp@yourdomain.com>`, or
-   - Leave it on `onboarding@resend.dev` for now — emails will still send,
-     just from that address.
-4. If you'd rather skip email entirely for now, leave `RESEND_API_KEY` blank —
-   the app will skip sending and log a warning instead of failing the RSVP.
+---
 
-## 3. Configure environment variables
+## 2. Configure environment variables
 
-Copy `.env.example` to `.env.local` and fill in the values from steps 1–2,
-plus:
+Copy `.env.example` to `.env.local` and fill in:
 
-- `ADMIN_PASSWORD` — the password you'll type in at `/admin/login`. Pick
-  something only you know.
-- `ADMIN_SESSION_SECRET` — a random string used to sign your login session.
-  Generate one with `openssl rand -base64 32` (or any password generator —
-  it just needs to be long and random).
-- `NEXT_PUBLIC_SITE_URL` — leave the placeholder for now; you'll come back
-  and set this after your first deploy (step 5).
+* `NEXT_PUBLIC_SUPABASE_URL` — your Supabase project URL.
+* `SUPABASE_SERVICE_ROLE_KEY` — your Supabase service role key.
+* `ADMIN_PASSWORD` — the password you'll use at `/admin/login`.
+* `ADMIN_SESSION_SECRET` — a long random string used to sign your login session.
+* `NEXT_PUBLIC_SITE_URL` — your deployed Vercel URL.
 
-## 4. Run it locally (optional, to test before deploying)
+No email service is required. The RSVP system does not send email or SMS notifications.
+
+---
+
+## 3. Run it locally (optional)
 
 ```bash
 npm install
 npm run dev
 ```
 
-Visit http://localhost:3000 for the public RSVP page, and
-http://localhost:3000/admin/login for the admin dashboard.
+Visit:
 
-## 5. Deploy to Vercel
+* `http://localhost:3000` — public RSVP page
+* `http://localhost:3000/admin/login` — admin dashboard
 
-1. Push this folder to a GitHub repo (private is fine).
+---
+
+## 4. Deploy to Vercel
+
+1. Push this folder to a GitHub repo.
 2. Go to https://vercel.com → **Add New Project** → import that repo.
-3. In the "Environment Variables" step, add every variable from your
-   `.env.local` (same names, same values).
-4. Click **Deploy**. Vercel gives you a URL like
-   `https://your-app-name.vercel.app` — that's your public RSVP URL.
-5. Go back into Vercel → Project → Settings → Environment Variables, and set
-   `NEXT_PUBLIC_SITE_URL` to that real URL (needed so the WhatsApp share
-   button and QR codes point to the right place). Redeploy after changing it
-   (Vercel → Deployments → ⋯ → Redeploy).
+3. In **Environment Variables**, add the required variables from your `.env.local`.
+4. Click **Deploy**.
+5. Vercel will give you a URL such as:
 
-Your two URLs:
+`https://your-app-name.vercel.app`
 
-- **Public RSVP page:** `https://your-app-name.vercel.app/`
-- **Private admin dashboard:** `https://your-app-name.vercel.app/admin/login`
+6. Set `NEXT_PUBLIC_SITE_URL` to that real URL in Vercel's environment variables and redeploy if necessary.
 
-The admin dashboard is not linked from anywhere on the public site and isn't
-guessable — only you (and anyone you give the password to) can reach it.
+Your two main URLs are:
 
-## 6. Get your poster/WhatsApp QR code
+* **Public RSVP page:** `https://your-app-name.vercel.app/`
+* **Private admin dashboard:** `https://your-app-name.vercel.app/admin/login`
+
+---
+
+## 5. Get your poster/WhatsApp QR code
 
 Once deployed, visit:
 
-```
+```text
 https://your-app-name.vercel.app/api/qr?text=https://your-app-name.vercel.app/
 ```
 
-That's a downloadable PNG QR code encoding your live RSVP link — put it on
-posters or share it directly.
+This generates a QR code encoding your live RSVP link. It can be used on posters or shared directly.
 
-## 7. Day-to-day admin tasks
+---
 
-- **Verify a payment:** Log in at `/admin` → click **View** on the RSVP →
-  check the transaction ref / payer name / screenshot against your MoMo
-  statement → click **Confirm Payment** (or **Reject Payment**). Confirming
-  automatically emails the attendee that they're officially confirmed.
-- **Check attendees in at the door:** go to `/admin/checkin`. On a phone with
-  a camera, tap **Scan QR Code** and point it at each attendee's confirmation
-  QR code. On any device, you can instead just search by name/phone/RSVP ID
-  and tap **Check In**. Only attendees with **Payment Confirmed** can be
-  checked in; a second check-in of the same person asks for confirmation
-  first.
-- **Export the full list:** `/admin` → **Export CSV** downloads everything
-  (names, phones, emails, payment status, check-in status) as a spreadsheet.
-- **Search/filter:** the search box on `/admin` matches name, phone, email,
-  RSVP ID, or MoMo transaction reference; the dropdowns filter by payment or
-  RSVP status.
+## 6. Day-to-day admin tasks
 
-## 8. Changing event details later
+### Verify a payment
 
-Date, venue, time, MoMo number/account/reference, and the GHS 40 amount are
-all defined in one place: `lib/types.ts`. Edit the constants at the top of
-that file, commit, and push — Vercel redeploys automatically. (The
-programme image itself is `public/programme.jpeg` — replace that file if the
-programme ever changes.)
+Log in at `/admin` → click **View** on the RSVP → check the transaction reference, payer name, and payment screenshot against your MoMo statement → click **Confirm Payment** or **Reject Payment**.
+
+Payment verification is performed manually by the organizing committee.
+
+### Check attendees in at the door
+
+Go to `/admin/checkin`.
+
+On a phone with a supported browser and camera:
+
+1. Tap **Scan QR Code**.
+2. Allow camera access.
+3. Point the camera at the attendee's confirmation QR code.
+4. The system checks the RSVP and payment status.
+
+You can also search manually by name, phone number, or RSVP ID.
+
+Only attendees with **Payment Confirmed** can be checked in. A second check-in requires an override confirmation.
+
+### Export the full list
+
+`/admin` → **Export CSV** downloads the RSVP information as a spreadsheet.
+
+### Search and filter
+
+The search box on `/admin` can be used to find attendees by name, phone number, RSVP ID, or MoMo transaction reference.
+
+The dropdowns can filter by payment status or RSVP status.
+
+---
+
+## 7. Changing event details later
+
+The date, venue, time, MoMo number, account name, reference, and **GHS 30 contribution amount** are defined in:
+
+```text
+lib/types.ts
+```
+
+Edit the constants in that file, commit the change, and push to GitHub. Vercel will automatically create a new deployment.
+
+The programme image is:
+
+```text
+public/programme.jpeg
+```
+
+Replace that file if the programme changes.
+
+---
 
 ## What's already built in
 
-- Public RSVP form (name, phone, email only — no extra fields)
-- MoMo payment instructions with your real number/account/reference, and a
-  "Party contribution: GHS 40" framing (never "entry fee")
-- Payment reference + payer name + optional screenshot upload, with a
-  "Payment Pending Verification" status that only an admin can change —
-  nothing the visitor submits can mark itself confirmed, and the amount due
-  is fixed on the server, never trusted from the browser
-- Duplicate-RSVP prevention (one phone number, one email, each used once)
-- Automatic "pending verification" email on submission, and an automatic
-  "payment confirmed" email the moment you confirm it in the dashboard
-- A private admin dashboard (password-protected) with search, filters,
-  per-record detail view, screenshot viewing, manual confirm/reject, CSV
-  export, and summary cards (total RSVPs, confirmed/pending/rejected,
-  amounts expected/received/outstanding)
-- Unique per-attendee QR codes (shown on their confirmation page) plus a
-  poster-ready QR code for the public RSVP link
-- A check-in screen with camera QR scanning (where supported) and manual
-  search, blocking check-in for unconfirmed payments and double check-ins
-  unless you override
+* Public RSVP form with name and phone number.
+* GHS 30 party contribution.
+* MoMo payment instructions with the event's payment number, account name, and reference.
+* Contribution explanation covering the DJ, décor, and cake, with a possible complimentary drink depending on funds raised.
+* Payment reference and payer name collection.
+* Optional payment screenshot upload.
+* Payment Pending Verification status that only an admin can change.
+* The contribution amount is fixed on the server and cannot be changed by the visitor.
+* Duplicate-RSVP prevention by phone number.
+* Private password-protected admin dashboard.
+* Search and filtering.
+* Individual RSVP detail pages.
+* Payment screenshot viewing.
+* Manual payment confirmation/rejection.
+* CSV export.
+* Summary cards showing total RSVPs, confirmed/pending/rejected payments, and expected/received/outstanding amounts.
+* U Unique per-attendee QR codes shown on confirmation pages.
+* Poster-ready QR code for the public RSVP link.
+* Check-in screen with camera QR scanning where supported.
+* Manual attendee search as a fallback for QR scanning.
+* Check-in blocked for unconfirmed payments.
+* Protection against accidental duplicate check-ins.
+
+---
 
 ## Notes on security
 
-- The database has no public access at all — every read/write goes through
-  server code using Supabase's service role key, which never reaches the
-  browser.
-- The admin dashboard is protected by a signed, httpOnly session cookie; the
-  password lives only in your environment variables.
-- Payment screenshots are stored in a private Supabase bucket and served to
-  you via short-lived signed URLs, never a public link.
+* The database has no public access. Reads and writes go through server code using the Supabase service role key, which never reaches the browser.
+* The admin dashboard is protected by a signed, httpOnly session cookie.
+* The admin password is stored only in the environment variables.
+* Payment screenshots are stored in a private Supabase bucket and served through short-lived signed URLs rather than public links.
+* Payment confirmation is controlled by the admin and cannot be set by a visitor through the RSVP form.
