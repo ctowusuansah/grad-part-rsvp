@@ -17,7 +17,6 @@ export default function RsvpForm() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [momoRef, setMomoRef] = useState("");
   const [momoPayerName, setMomoPayerName] = useState("");
-  const [screenshot, setScreenshot] = useState<File | null>(null);
   const [confirmed, setConfirmed] = useState(false);
 
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -48,10 +47,6 @@ export default function RsvpForm() {
     formData.set("momo_payer_name", momoPayerName);
     formData.set("confirmed", confirmed ? "true" : "false");
 
-    if (screenshot) {
-      formData.set("screenshot", screenshot);
-    }
-
     try {
       const res = await fetch("/api/rsvp", {
         method: "POST",
@@ -61,7 +56,9 @@ export default function RsvpForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        setGeneralError(data.error || "Something went wrong. Please try again.");
+        setGeneralError(
+          data.error || "Something went wrong. Please try again."
+        );
 
         if (data.fieldErrors) {
           setErrors(data.fieldErrors);
@@ -73,7 +70,9 @@ export default function RsvpForm() {
 
       router.push(`/rsvp/confirmation/${data.id}`);
     } catch {
-      setGeneralError("Network error. Please check your connection and try again.");
+      setGeneralError(
+        "Network error. Please check your connection and try again."
+      );
       setSubmitting(false);
     }
   }
@@ -201,20 +200,6 @@ export default function RsvpForm() {
             required
             className="input"
             placeholder="Name on the MoMo account you paid from"
-          />
-        </Field>
-
-        <Field
-          label="Upload Payment Screenshot (optional)"
-          error={errors.screenshot}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setScreenshot(e.target.files?.[0] || null)
-            }
-            className="input file:mr-3 file:rounded-sm file:border-0 file:bg-ink file:px-3 file:py-2 file:text-cream"
           />
         </Field>
 
