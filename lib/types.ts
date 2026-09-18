@@ -31,7 +31,7 @@ export function formatRsvpId(serial: number): string {
   return `GRAD-2026-${String(serial).padStart(5, "0")}`;
 }
 
-export const CONTRIBUTION_AMOUNT_GHS = 40;
+export const CONTRIBUTION_AMOUNT_GHS = 30;
 export const EVENT_NAME = "Class of 2026 Grad Party";
 export const EVENT_DATE_DISPLAY = "26 September 2026";
 export const EVENT_DATE_ISO = "2026-09-26";
